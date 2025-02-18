@@ -45,7 +45,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker load -i /path/to/your/server/your-image-name.tar
+            docker load -i /app/mi-app.tar
             docker stop jcapax/mi-app || true
             docker rm jcapax/mi-app || true
             docker run -d --name jcapax/mi-app -p 3000:3000 your-image-name
