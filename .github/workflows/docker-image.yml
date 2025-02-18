@@ -27,7 +27,7 @@ jobs:
         run: docker build -t mi-app .
 
       - name: Save Docker image
-        run: docker save -o your-image-name.tar your-image-name
+        run: docker save -o mi-app.tar mi-app
 
       - name: Copy Docker image to server
         uses: appleboy/scp-action@master
@@ -35,8 +35,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "your-image-name.tar"
-          target: "/path/to/your/server/your-image-name.tar"
+          source: "mi-app.tar"
+          target: "/app/mi-app.tar"
 
       - name: SSH into server and deploy
         uses: appleboy/ssh-action@master
@@ -48,4 +48,4 @@ jobs:
             docker load -i /app/mi-app.tar
             docker stop jcapax/mi-app || true
             docker rm jcapax/mi-app || true
-            docker run -d --name jcapax/mi-app -p 3000:3000 your-image-name
+            docker run -d --name jcapax/mi-app -p 3001:3001 mi-app
