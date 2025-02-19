@@ -1,0 +1,38 @@
+name: Deploy Docker Image
+
+on:
+  push:
+    branches:
+      - main  # Cambia esto a la rama que desees
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: Build Docker image
+      run: docker build -t jcapax/mi-app:latest .
+
+    - name: Push Docker image
+      run: docker push jcapax/mi-app:latest
+
+    - name: Deploy to server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          docker pull jcapax/mi-app:latest
+          docker stop mi-app-container || true
+          docker rm mi-app-container || true
+          docker run -d --name mi-app-container -p 3001:3001 jcapax/mi-app:latest
