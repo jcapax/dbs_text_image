@@ -9,6 +9,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -23,10 +28,10 @@ jobs:
     - name: Set up SSH
       run: |
         mkdir -p ~/.ssh
-        echo "$secret.SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H "$secret.SSH_HOST" >> ~/.ssh/known_hosts
+        ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
 
     - name: Create file on VPS
       run: |
-        ssh $secret.SSH_USER@$secret.SSH_HOST "echo 'Este es un archivo creado desde GitHub Actions' > ~/archivo.txt"
+        ssh $SSH_USER@$SSH_HOST "echo 'Este es un archivo creado desde GitHub Actions' > ~/archivo.txt"
