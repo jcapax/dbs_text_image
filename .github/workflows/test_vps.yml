@@ -13,6 +13,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Debug SSH Variables
+      run: |
+        if [ -z "$SSH_PRIVATE_KEY" ]; then echo "SSH_PRIVATE_KEY is empty"; else echo "SSH_PRIVATE_KEY is set"; fi
+        if [ -z "$SSH_HOST" ]; then echo "SSH_HOST is empty"; else echo "SSH_HOST is set"; fi
+        if [ -z "$SSH_USER" ]; then echo "SSH_USER is empty"; else echo "SSH_USER is set"; fi
+
+
     - name: Set up SSH
       run: |
         mkdir -p ~/.ssh
