@@ -1,0 +1,58 @@
+name: Build, Push and Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main # Cambia esto si usas otra rama principal
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Clonar el repositorio
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Paso 2: Iniciar sesión en Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      # Paso 3: Construir la imagen de Docker
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/mi-aplicacion:${{ github.sha }} .
+      
+      # Paso 4: Subir la imagen a Docker Hub
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mi-aplicacion:${{ github.sha }}
+
+      # Paso 5: Configurar SSH para el VPS
+      #- name: Setup SSH
+      #  run: |
+      #    mkdir -p ~/.ssh
+      #    echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+      #    chmod 600 ~/.ssh/id_rsa
+      #    ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      # Paso 6: Desplegar en el VPS
+      - name: Deploy to VPS
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
+          # Detener el contenedor anterior si existe
+          docker stop mi-aplicacion || true
+          docker rm mi-aplicacion || true
+
+          # Eliminar la imagen anterior si existe
+          docker rmi ${{ secrets.DOCKER_HUB_USERNAME }}/mi-aplicacion:${{ github.sha }} || true
+
+          # Descargar la nueva imagen desde Docker Hub
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/mi-aplicacion:${{ github.sha }}
+
+          # Ejecutar el nuevo contenedor
+          docker run -d --name mi-aplicacion -p 80:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/mi-aplicacion:${{ github.sha }}
+          EOF
