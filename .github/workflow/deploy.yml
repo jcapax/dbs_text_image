@@ -32,12 +32,12 @@ jobs:
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mi-aplicacion:${{ github.sha }}
 
       # Paso 5: Configurar SSH para el VPS
-      #- name: Setup SSH
-      #  run: |
-      #    mkdir -p ~/.ssh
-      #    echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-      #    chmod 600 ~/.ssh/id_rsa
-      #    ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       # Paso 6: Desplegar en el VPS
       - name: Deploy to VPS
