@@ -45,21 +45,21 @@ jobs:
           ssh-keyscan ${{ SSH_HOST }} >> ~/.ssh/known_hosts
 
       # Paso 6: Desplegar en el VPS
-      - name: Deploy to VPS
-        run: |
-          ssh ${{SSH_USER }}@${{SSH_HOST }} <<EOF
-          # Detener el contenedor anterior si existe
-          docker stop mi-aplicacion || true
-          docker rm mi-aplicacion || true
+    #  - name: Deploy to VPS
+    #    run: |
+    #      ssh ${{ SSH_USER }}@${{ SSH_HOST }} <<EOF
+    #      # Detener el contenedor anterior si existe
+    #      docker stop mi-aplicacion || true
+    #      docker rm mi-aplicacion || true
 
           # Eliminar la imagen anterior si existe
-          docker rmi ${{ secrets.DOCKER_HUB_USERNAME }}/mi-aplicacion:${{ github.sha }} || true
+    #      docker rmi ${{ secrets.DOCKER_HUB_USERNAME }}/mi-aplicacion:${{ github.sha }} || true
 
           # Descargar la nueva imagen desde Docker Hub
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/mi-aplicacion:${{ github.sha }}
+    #      docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/mi-aplicacion:${{ github.sha }}
 
           # Ejecutar el nuevo contenedor
-          docker run -d --name mi-aplicacion -p 80:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/mi-aplicacion:${{ github.sha }}
-          EOF
+    #      docker run -d --name mi-aplicacion -p 80:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/mi-aplicacion:${{ github.sha }}
+    #      EOF
 
           
