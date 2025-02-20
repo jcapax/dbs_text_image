@@ -1,4 +1,4 @@
-name: Build, Push and Deploy to VPS
+name:   
 
 on:
   push:
@@ -40,9 +40,9 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan ${{ SSH_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       # Paso 6: Desplegar en el VPS
     #  - name: Deploy to VPS
