@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: test action
 
 on:
   push:
