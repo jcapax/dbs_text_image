@@ -61,7 +61,7 @@ jobs:
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${NAME_APPLICATION}:${{ github.sha }}
 
           # Ejecutar el nuevo contenedor
-          docker run -d --name ${NAME_APPLICATION} -p 3001:3001 ${{ secrets.DOCKER_HUB_USERNAME }}/${NAME_APPLICATION}:${{ github.sha }}
+          docker run -d --name ${NAME_APPLICATION} -p 80:3001 ${{ secrets.DOCKER_HUB_USERNAME }}/${NAME_APPLICATION}:${{ github.sha }}
           EOF
 
           
